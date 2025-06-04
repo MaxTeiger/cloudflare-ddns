@@ -8,14 +8,24 @@ from dotenv import load_dotenv
 
 # Charger la config
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-load_dotenv(os.path.join(BASE_DIR, '.env'))
+dotenv_path = os.path.join(BASE_DIR, '.env')
+
+if not os.path.exists(dotenv_path):
+    dotenv_path = '/etc/cloudflare-ddns/.env'
+
+load_dotenv(dotenv_path)
 
 CLOUDFLARE_API_TOKEN = os.getenv("CLOUDFLARE_API_TOKEN")
 ZONE_ID = os.getenv("ZONE_ID")
 DNS_RECORD_NAME = os.getenv("DNS_RECORD_NAME")
-LOG_FILE = os.getenv("LOG_FILE", "cloudflare-ddns.log")
 
-logging.basicConfig(filename=LOG_FILE, level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+    handlers=[
+        logging.StreamHandler(sys.stdout)
+    ]
+)
 
 HEADERS = {
     "Authorization": f"Bearer {CLOUDFLARE_API_TOKEN}",
@@ -53,8 +63,11 @@ def update_dns_record(record_id, ip):
 def main():
     try:
         public_ip = get_public_ip()
+        logging.info(f"Current public IP: {public_ip}")
         dns_record = get_dns_record()
+        logging.info(f"Current DNS record: {dns_record['content']} (ID: {dns_record['id']})")
         current_ip = dns_record["content"]
+        logging.info(f"Current DNS record IP: {current_ip}")
         record_id = dns_record["id"]
 
         if public_ip != current_ip:

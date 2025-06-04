@@ -1,1 +1,16 @@
+# cloudflare-ddns/.gitignore
+# Ignore Python bytecode files
+__pycache__/
+*.py[cod]
+venv/
+
+# Ignore env files
 .env
+
+# Ignore generated files using pyinstaller
+dist/
+build/
+ddns.spec
+
+# Ignore log files
+*.log
