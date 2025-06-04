@@ -4,6 +4,8 @@ import requests
 import json
 import os
 import logging
+import sys
+
 from dotenv import load_dotenv
 
 # Charger la config
