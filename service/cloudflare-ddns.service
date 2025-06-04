@@ -1,0 +1,13 @@
+[Unit]
+Description=Cloudflare DDNS Updater
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/cloudflare-ddns
+ExecStart=/home/pi/cloudflare-ddns/dist/ddns
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
