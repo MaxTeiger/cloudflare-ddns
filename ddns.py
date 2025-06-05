@@ -9,18 +9,6 @@ import sys
 from dotenv import load_dotenv
 
 # Charger la config
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-dotenv_path = os.path.join(BASE_DIR, '.env')
-
-if not os.path.exists(dotenv_path):
-    dotenv_path = '/etc/cloudflare-ddns/.env'
-
-load_dotenv(dotenv_path)
-
-CLOUDFLARE_API_TOKEN = os.getenv("CLOUDFLARE_API_TOKEN")
-ZONE_ID = os.getenv("ZONE_ID")
-DNS_RECORD_NAME = os.getenv("DNS_RECORD_NAME")
-
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
@@ -28,6 +16,20 @@ logging.basicConfig(
         logging.StreamHandler(sys.stdout)
     ]
 )
+
+# Chemin vers le fichier .env
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+dotenv_path = '/etc/cloudflare-ddns/.env'
+if not os.path.exists(dotenv_path):
+	logging.warning("Using local .env file as /etc/cloudflare-ddns/.env not found.")
+	dotenv_path = os.path.join(BASE_DIR, '.env')
+
+load_dotenv(dotenv_path)
+
+CLOUDFLARE_API_TOKEN = os.getenv("CLOUDFLARE_API_TOKEN")
+ZONE_ID = os.getenv("ZONE_ID")
+DNS_RECORD_NAME = os.getenv("DNS_RECORD_NAME")
+
 
 HEADERS = {
     "Authorization": f"Bearer {CLOUDFLARE_API_TOKEN}",
